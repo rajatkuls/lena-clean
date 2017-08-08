@@ -1,5 +1,5 @@
-# silence non silence and save classifier. system input percentage lower and percentage higher threshold
-# eg: python wrap-a.py 10 10
+# silence non silence and save classifier. system input: <percentage lower> <percentage higher> <outputlocation>
+# eg: python wrap-a.py 10 10 models/a_classifier_all.p
 # This module takes classifier and folds defined in config-a
 # 	then learns the best parameters from config-a using crossval
 #	finally saves a silence/nonsilence classifier in models/a_classifier_all.p
@@ -27,6 +27,7 @@ import config_a
 
 lowerPercent = float(sys.argv[1])
 upperPercent = float(sys.argv[2])
+outputFile   = sys.argv[3]
 
 scores = config_a.scores
 param_grid = config_a.param_grid
@@ -174,7 +175,7 @@ all_classifier = pickle.load(open('models/a_classifier_template.p','r'))
 all_classifier.set_params(**param_list[best_param_idx])
 all_classifier.fit(X,y)
 
-pickle.dump(all_classifier,open('models/a_classifier_all.p','w'))
-print 'Model models/a_classifier_all.p saved'
+pickle.dump(all_classifier,open(outputFile,'w'))
+print 'Model '+outputFile+' saved'
 
 

@@ -1,6 +1,6 @@
 # given a silence classifier, use it to generate audacity files and evaluate performance.
 # user can adjust thresholds of wrap-a using this as diagnostic
-# system input - wavFile long/short outputFolder
+# system input - wavFile pathToModel outputFolder
 
 
 import labelTools
@@ -37,4 +37,5 @@ finalStmAud.writeToStm(y_sil_test,silDict,medianame,outfileFolder+'/'+medianame+
 finalStmAud.writeToAudacity(y_sil_test,silDict,outfileFolder+'/'+medianame+'.txt')
 
 os.system('cp '+inputWav+' '+outfileFolder+'/'+medianame+'.wav')
+
 
