@@ -16,30 +16,33 @@ from sklearn.metrics import recall_score
 
 import sys
 
-mode = sys.argv[1]
-speechMode = sys.argv[2]
+try:
+	speechModel = sys.argv[1]
+except:
+	speechModel = 'models/a_classifier_all.p'
 
 
 try:
-	labelType = sys.argv[3]
+	labelType = sys.argv[2]
 except:
 	labelType = 'class'
 
-
-ST_FEATUREPATH = '../data/features/st/VanDam/'
-ST_FEATUREPATH1 = '../data/features/st/VanDam1/'
-
-FOLDS_PATH = '../data/folds/VanDam/portion*'
-FOLDS_PATH1 = '../data/folds/VanDam1/portion*'
+try:
+	outputFile   = sys.argv[3]
+except:
+	outputFile   = 'models/c_classifier_all.p'
 
 
-WAV_PATH = '../data/VanDam/'
-WAV1_PATH = '../data/VanDam1/'  # I can't write wavs to original location
-DATA_PATH = '../data/'
+scores = config_c.scores
+param_grid = config_c.param_grid
 
-FEAT_DIM = 34
+FEATUREPATH = config_c.FEATUREPATH
 
+FOLDS_PATH = config_c.FOLDS_PATH
 
+FEAT_DIM = config_c.FEAT_DIM
+
+labelType = config_c.labelType
 
 
 def getFilesFromPortion(portion):
@@ -47,22 +50,17 @@ def getFilesFromPortion(portion):
         return [x[:x.find('.')] for x in t1]
 
 foldFileList  = []
-foldFileList1 = []
 
 for portion in glob.glob(FOLDS_PATH):
         foldFileList.append([x for x in getFilesFromPortion(portion)])
 
-for portion in glob.glob(FOLDS_PATH1):
-        foldFileList1.append([x for x in getFilesFromPortion(portion)])
 
+folders = glob.glob(FEATUREPATH+'*')
 
-folders = glob.glob(ST_FEATUREPATH+'*')
-
-clfSpeech = pickle.load(open('speech_classifier_'+speechMode+'.p','r'))
+clfSpeech = pickle.load(open(speechModel,'r'))
 
 
 
-if mode=='short':
 X = np.array([]).reshape(FEAT_DIM,0)
 y = np.array([])
 lengths = []
@@ -70,7 +68,7 @@ for i in xrange(len(foldFileList)):
 	length=0
 	for f in foldFileList[i]:
 		print 'Reading '+str(f)
-		filename = ST_FEATUREPATH+str(i)+'/'+f
+		filename = FEATUREPATH+str(i)+'/'+f
 		y1 = pickle.load(open(filename+'_y'+labelType,'r'))
 		x1 = pickle.load(open(filename+'_X','r'))
 		y1 = np.asarray(y1)
@@ -91,46 +89,6 @@ for i in xrange(len(foldFileList)):
 boundaries = [sum(lengths[:x]) for x in xrange(len(lengths)+1)]
 idxs = [(boundaries[i],boundaries[i+1]) for i in xrange(len(boundaries)-1)]
 X = X.T
-	print X.shape
-
-else:
-	X = np.array([]).reshape(FEAT_DIM,0)
-	y = np.array([])
-	# y2 = np.array([])
-	lengths = []
-	for i in xrange(len(foldFileList1)):
-		length=0
-		for f in foldFileList1[i]:
-			print 'Reading '+str(f)
-			filename = ST_FEATUREPATH1+str(i)+'/'+f
-			y1_temp = pickle.load(open(filename+'_y'+'sil_near','r'))
-			# y2_temp = pickle.load(open(filename+'_y'+'sil_all','r'))
-			x1 = pickle.load(open(filename+'_X','r'))
-			y1_temp = np.asarray(y1_temp)
-			# y2_temp = np.asarray(y2_temp)
-			# assert y1_temp.shape[0]==y2_temp.shape[0]
-			if y1_temp.shape[0] < x1.shape[1]:
-				x1 = x1[:,:y1_temp.shape[0]]
-			else:
-				y1_temp = y1_temp[:x1.shape[1]]
-				# y2_temp = y2_temp[:x1.shape[1]]
-			y_speech = clfSpeech.predict(x1.T)
-			y1_temp = y1_temp[y_speech>0]
-			x1 = x1[:,y_speech>0]
-			x1 = x1[:,y1_temp>0]
-                        y1_temp = y1_temp[y1_temp>0]
-			length+=y1_temp.shape[0]
-		assert y1_temp.shape[0]==x1.shape[1]
-		X = np.hstack((X,x1))
-		y = np.concatenate((y,y1_temp))
-		# y2 = np.concatenate((y2,y2_temp))
-		lengths.append(length)
-
-	foldFileList=foldFileList1
-	boundaries = [sum(lengths[:x]) for x in xrange(len(lengths)+1)]
-	idxs = [(boundaries[i],boundaries[i+1]) for i in xrange(len(boundaries)-1)]
-	X = X.T
-	print X.shape
 
 
 
@@ -159,9 +117,6 @@ def featureListToVectors(featureList):
 
 
 
-scores = ['f1','precision','recall']
-param_grid = {'n_estimators': [10], 'max_features': ['auto']}
-param_grid = {'n_estimators': [1,10], 'max_features': ['auto', 'sqrt', 'log2']}
 
 param_list = list(ParameterGrid(param_grid))
 
@@ -182,15 +137,17 @@ for p,params in enumerate(param_list):
         precision_list = []
         recall_list = []
         for i in xrange(len(foldFileList)):
-                rfc = RandomForestClassifier(**params)
-                rfc_test = RandomForestClassifier(**params)
+		clf = pickle.load(open('models/c_classifier_template.p','r'))
+                clf.set_params(**params)
+		clf_test = pickle.load(open('models/c_classifier_template.p','r'))
+                clf_test.set_params(**params)
                 trainIdx,testIdx = splitGenerator.next()
                 X_train = X[trainIdx]
                 X_test  = X[testIdx]
 		y_train = y[trainIdx]
 		y_test  = y[testIdx]
-		rfc.fit(X_train,y_train)
-                y_pred = rfc.predict(X_test)
+		clf.fit(X_train,y_train)
+                y_pred = clf.predict(X_test)
                 f1_list.append(f1_score(y_test,y_pred,average='weighted'))
                 if f1_list[-1] > best_f1:
                         best_f1   = f1_list[-1]
@@ -216,12 +173,13 @@ print 'Corresponding recall   : ' + str(param_score_dict['recall'][best_param_id
 
 
 print 'Training global model with these parameters.'
-class_rfc = RandomForestClassifier(**param_list[best_param_idx])
-class_rfc.fit(X,y)
+all_classifier_class = pickle.load(open('models/c_classifier_template.p','r'))
+all_classifier_class.set_params(**param_list[best_param_idx])
+all_classifier_class.fit(X,y)
 
-pickle.dump(class_rfc,open('class_'+mode+'_'+speechMode+'.p','w'))
+pickle.dump(class_rfc,open(outputFile,'w'))
 
-print 'Model class_'+mode+'_'+speechMode+'_'+labelType+'.p saved.'
+print 'Model '+outputFile+' saved.'
 
 
 

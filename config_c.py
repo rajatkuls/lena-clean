@@ -12,7 +12,7 @@ scores = ['f1','precision','recall']
 
 # Define the classifier here. Example Random Forest is used.
 # This will be initialized when this config module is imported
-# remember to import the classifier in wrap-a also
+# remember to import the classifier in wrap-c also
 from sklearn.ensemble import RandomForestClassifier
 
 rfc = RandomForestClassifier()

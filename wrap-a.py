@@ -25,9 +25,14 @@ os.system('mkdir -p models')
 import sys
 import config_a
 
-lowerPercent = float(sys.argv[1])
-upperPercent = float(sys.argv[2])
-outputFile   = sys.argv[3]
+try:
+	lowerPercent = float(sys.argv[1])
+	upperPercent = float(sys.argv[2])
+	outputFile   = sys.argv[3]
+except:
+	lowerPercent = 15.0
+	upperPercent = 15.0
+	outputFile   = 'models/a_classifier_all.p'
 
 scores = config_a.scores
 param_grid = config_a.param_grid
