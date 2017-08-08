@@ -36,8 +36,8 @@ X_test = X_test.T
 y_sil_test = clf.predict(X_test)
 
 medianame = extractFeatures.basename(inputWav)
-finalStmAud.writeToStm(y_sil_test,silDict,medianame,outfileFolder+'/'+medianame+'.stm')
-finalStmAud.writeToAudacity(y_sil_test,silDict,outfileFolder+'/'+medianame+'.txt')
+labelTools.writeToStm(y_sil_test,silDict,medianame,outfileFolder+'/'+medianame+'.stm')
+labelTools.writeToAudacity(y_sil_test,silDict,outfileFolder+'/'+medianame+'.txt')
 
 os.system('cp '+inputWav+' '+outfileFolder+'/'+medianame+'.wav')
 

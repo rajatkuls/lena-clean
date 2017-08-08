@@ -20,7 +20,7 @@ from pyAudioAnalysis import audioFeatureExtraction as aF
 from pyAudioAnalysis import audioTrainTest as aT
 from scipy import stats
 
-import finalStmAud
+import labelTools
 import extractFeatures
 
 import sys
@@ -31,13 +31,13 @@ stStep = extractFeatures.stStep
 
 inputWav = sys.argv[1]
 
-classifier = sys.argv[2]
+classModel = sys.argv[2]
 
 outfileFolder = sys.argv[3]
 
-speechMode = sys.argv[4]
+speechModel = sys.argv[4]
 
-clf = pickle.load(open(classifier,'r'))
+clf = pickle.load(open(classModel,'r'))
 
 clfSpeech = pickle.load(open('speech_classifier_'+speechMode+'.p','r'))
 
@@ -67,8 +67,8 @@ classDict        = {'CHI':1,'MOT':2,'FAT':3,'OCH':4,'OAD':5,'OTH':0}
 classDictBinary  = {'CHI':1,'MOT':2,'FAT':2,'OCH':1,'OAD':2,'OTH':0} # child adult
 classDictTernary = {'CHI':1,'MOT':2,'FAT':3,'SIL':0} #'OCH':1,'OAD':0,'OTH':0} # child male female
 medianame = extractFeatures.basename(inputWav)
-finalStmAud.writeToStm(y_out,classDictTernary,medianame,outfileFolder+'/'+medianame+'.stm')
-finalStmAud.writeToAudacity(y_out,classDictTernary,outfileFolder+'/'+medianame+'.txt')
+labelTools.writeToStm(y_out,classDictTernary,medianame,outfileFolder+'/'+medianame+'.stm')
+labelTools.writeToAudacity(y_out,classDictTernary,outfileFolder+'/'+medianame+'.txt')
 pickle.dump(y_out,open(outfileFolder+'/'+medianame+'_y_out.p','w'))
 
 os.system('cp '+inputWav+' '+outfileFolder+'/'+medianame+'.wav')
