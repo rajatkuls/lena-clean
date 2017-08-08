@@ -8,7 +8,6 @@ from pyAudioAnalysis import audioFeatureExtraction as aF
 from pyAudioAnalysis import audioTrainTest as aT
 import numpy as np
 import labelTools
-import helper
 import pdb
 
 import extractFeatures_config
@@ -28,6 +27,7 @@ FOLDS_PATH = extractFeatures_config.FOLDS_PATH
 
 FRAME_WIDTH = extractFeatures_config.FRAME_WIDTH
 INV_FRAME_WIDTH = extractFeatures_config.INV_FRAME_WIDTH
+MIN_DUR = extractFeatures_config.MIN_DUR
 
 
 stWin = extractFeatures_config.stWin
@@ -139,7 +139,7 @@ def getRawStVectorPerWav(wavFile,stWin,stStep):
 	
 
 def getLabelPerWav(stmFile,stStep,labelsMapFn,labelsDict):
-	seg = helper.convertToFrames(stmFile)
+	seg = labelTools.convertToFrames(stmFile)
 	labels = [labelsMapFn(x[2],labelsDict) for x in seg]
 	return labels[::int(stStep*INV_FRAME_WIDTH)]
 

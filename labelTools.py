@@ -2,6 +2,14 @@
 
 import glob
 import os
+from decimal import Decimal, getcontext
+import extractFeatures
+
+
+WAV_PATH = extractFeatures_config.WAV_PATH
+DATA_PATH = extractFeatures_config.DATA_PATH
+OUTPUT_FEATURES_PATH = extractFeatures_config.OUTPUT_FEATURES_PATH
+
 
 label_map = {
     "ADU": "OAD", # adult
@@ -63,8 +71,6 @@ label_map = {
 }
 
 
-
-
 label_map1_near = {
 	"CHN": "CHI", # child near clear
 	"FAN": "MOT", # female adult near
@@ -84,11 +90,22 @@ classDict        = {'CHI':1,'MOT':2,'FAT':3,'OCH':4,'OAD':5,'OTH':0}
 classDictBinary  = {'CHI':1,'MOT':2,'FAT':2,'OCH':1,'OAD':2,'OTH':0} # child adult
 classDictTernary = {'CHI':1,'MOT':2,'FAT':3,'OCH':1,'OAD':0,'OTH':0} # child male female
 
-	
 
 
 
-
+def convertToFrames(stmFile):
+        stm = open(stmFile,'r').read().split('\n')[:-1]
+        seg = []
+        for line in stm:
+                start = float(line.split(' ')[3])
+                end = float(line.split(' ')[4])
+                t1 = [(start+i*FRAME_WIDTH,start+(i+1)*FRAME_WIDTH,line.split(' ')[1]) for i in xrange(int((end-start+MIN_DUR)*INV_FRAME_WIDTH))]
+                if str(start)!=str(t1[0][0]) or str(end)!=str(t1[-1][1]):
+                        print start,end
+                        print t1[0][0],t1[-1][1]
+                        print
+                seg.extend(t1)
+        return seg
 
 
 
