@@ -39,8 +39,11 @@ speechModel = sys.argv[4]
 
 clf = pickle.load(open(classModel,'r'))
 
-clfSpeech = pickle.load(open('speech_classifier_'+speechMode+'.p','r'))
+clfSpeech = pickle.load(open(speechModel,'r'))
 
+classDict        = labelTools.classDict
+classDictBinary  = labelTools.classDictBinary
+classDictTernary = labelTools.classDictTernary
 
 X_test = extractFeatures.getRawStVectorPerWav(inputWav,stWin,stStep)
 X_test = X_test.T
@@ -62,10 +65,6 @@ for i in xrange(y_out.shape[0]):
 			flag=1
 
 
-# silDict = {'SIL':0,'SPE':1}
-classDict        = {'CHI':1,'MOT':2,'FAT':3,'OCH':4,'OAD':5,'OTH':0}
-classDictBinary  = {'CHI':1,'MOT':2,'FAT':2,'OCH':1,'OAD':2,'OTH':0} # child adult
-classDictTernary = {'CHI':1,'MOT':2,'FAT':3,'SIL':0} #'OCH':1,'OAD':0,'OTH':0} # child male female
 medianame = extractFeatures.basename(inputWav)
 labelTools.writeToStm(y_out,classDictTernary,medianame,outfileFolder+'/'+medianame+'.stm')
 labelTools.writeToAudacity(y_out,classDictTernary,outfileFolder+'/'+medianame+'.txt')
