@@ -22,7 +22,7 @@ stStep = extractFeatures.stStep
 
 inputWav = sys.argv[1]
 
-model = sys.argv[2]  # long or short
+model = sys.argv[2] # model saved by wrap-a 
 
 outfileFolder = sys.argv[3]
 
