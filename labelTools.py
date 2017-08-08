@@ -88,7 +88,7 @@ label_map1_far = {
 	"CXF": "OCH", # other child far
 }
 
-
+silDict		 = {'SIL':0,'SPE':1}
 classDict        = {'CHI':1,'MOT':2,'FAT':3,'OCH':4,'OAD':5,'OTH':0}
 classDictBinary  = {'CHI':1,'MOT':2,'FAT':2,'OCH':1,'OAD':2,'OTH':0} # child adult
 classDictTernary = {'CHI':1,'MOT':2,'FAT':3,'OCH':1,'OAD':0,'OTH':0} # child male female

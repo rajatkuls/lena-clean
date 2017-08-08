@@ -1,52 +1,40 @@
 # given a silence classifier, use it to generate audacity files and evaluate performance.
-# user can adjust thresholds as they want
-# system input - wavFile long/short outfileFolder
+# user can adjust thresholds of wrap-a using this as diagnostic
+# system input - wavFile long/short outputFolder
 
 
-import numpy as np
+import labelTools
+import extractFeatures
+import sys
 import os
-import glob
+import numpy as np
 import cPickle as pickle
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import classification_report
+
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
-from sklearn.metrics import classification_report
-from sklearn.metrics import f1_score
-from sklearn.model_selection import ParameterGrid
-from sklearn.metrics import precision_score
-from sklearn.metrics import recall_score
-from pyAudioAnalysis import audioFeatureExtraction as aF
-from pyAudioAnalysis import audioTrainTest as aT
+import config_b
+# Ensure that your classifier of choice is imported here
 
-import finalStmAud
-import extractFeatures
-
-import sys
-
+silDict = labelTools.silDict
 
 stWin = extractFeatures.stWin
 stStep = extractFeatures.stStep
 
 inputWav = sys.argv[1]
 
-
-mode = sys.argv[2]  # long or short
+model = sys.argv[2]  # long or short
 
 outfileFolder = sys.argv[3]
 
-clf = pickle.load(open('speech_classifier_'+mode+'.p','r'))
+clf = pickle.load(open(model,'r'))
 
 X_test = extractFeatures.getRawStVectorPerWav(inputWav,stWin,stStep)
 X_test = X_test.T
 y_sil_test = clf.predict(X_test)
 
-silDict = {'SIL':0,'SPE':1}
 medianame = extractFeatures.basename(inputWav)
 finalStmAud.writeToStm(y_sil_test,silDict,medianame,outfileFolder+'/'+medianame+'.stm')
 finalStmAud.writeToAudacity(y_sil_test,silDict,outfileFolder+'/'+medianame+'.txt')
 
 os.system('cp '+inputWav+' '+outfileFolder+'/'+medianame+'.wav')
-
-
 
