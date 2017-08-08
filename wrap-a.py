@@ -1,4 +1,8 @@
 # silence non silence and save classifier. system input percentage lower and percentage higher threshold
+# eg: python wrap-a.py 10 10
+# This module takes classifier and folds defined in config-a
+# 	then learns the best parameters from config-a using crossval
+#	finally saves a silence/nonsilence classifier in models/a_classifier_all.p
 
 import numpy as np
 import os
@@ -49,7 +53,7 @@ y = np.array([])
 lengths = []
 for i in xrange(len(foldFileList)):
         length=0
-	print 'Reading short fold ' + str(i)
+	print 'Reading fold ' + str(i)
         for f in foldFileList[i]:
                 filename = FEATUREPATH+str(i)+'/'+f
                 y1 = pickle.load(open(filename+'_y'+labelType,'r'))
@@ -67,12 +71,6 @@ for i in xrange(len(foldFileList)):
 boundaries = [sum(lengths[:x]) for x in xrange(len(lengths)+1)]
 idxs = [(boundaries[i],boundaries[i+1]) for i in xrange(len(boundaries)-1)]
 X = X.T
-
-
-# 1 near
-# 2 all = near+far
-
-
 
 def yieldIdxs(foldFileList,idxs):
 	for i in xrange(len(foldFileList)):
