@@ -1,4 +1,4 @@
-
+# Put down all the paths here
 
 WAV_PATH = '../data/VanDam/'
 DATA_PATH = '../data/'

@@ -11,29 +11,26 @@ import labelTools
 import helper
 import pdb
 
+import extractFeatures_config
+
 # Feature extraction. Assume for both 159 and daylong
-# smooth 1.0 weight 0.2
-# TODO figure out if these are just features, to be further converted to per-fold arrays.
-# This will yield a generator to sklearn
+# constant bitrate of files
 
 os.system('mkdir -p ../data/features/')
 
 
-WAV_PATH = '../data/VanDam/'
-WAV1_PATH = '../data/VanDam1/'	# I can't write wavs to original location
-DATA_PATH = '../data/'
+WAV_PATH = extractFeatures_config.WAV_PATH
+DATA_PATH = extractFeatures_config.DATA_PATH
 
-FOLDS_PATH = '../data/folds/VanDam/portion*'
-FOLDS_PATH1 = '../data/folds/VanDam1/portion*'
+FOLDS_PATH = extractFeatures_config.FOLDS_PATH
 
 
-FRAME_WIDTH = 0.001
-INV_FRAME_WIDTH = 1000
-MIN_DUR = 0.0001
+FRAME_WIDTH = extractFeatures_config.FRAME_WIDTH
+INV_FRAME_WIDTH = extractFeatures_config.INV_FRAME_WIDTH
 
 
-stWin = 0.05
-stStep = 0.05
+stWin = extractFeatures_config.stWin
+stStep = extractFeatures_config.stStep
 
 
 shortSpeechDict = labelTools.label_map
@@ -50,9 +47,9 @@ def silMapFn(label,speechDict):
 label_map = labelTools.label_map
 # contains CHI, MOT, FAT, OCH, OAD, OTH
 
-classDict 	 = {'CHI':1,'MOT':2,'FAT':3,'OCH':4,'OAD':5,'OTH':0}
-classDictBinary  = {'CHI':1,'MOT':2,'FAT':2,'OCH':1,'OAD':2,'OTH':0} # child adult
-classDictTernary = {'CHI':1,'MOT':2,'FAT':3,'OCH':1,'OAD':0,'OTH':0} # child male female
+classDict 	 = labelTools.classDict
+classDictBinary  = labelTools.classDictBinary
+classDictTernary = labelTools.classDictTernary
 
 def classMapFn(label,typeSpeechDict):
 	if label in typeSpeechDict.keys():
