@@ -21,6 +21,7 @@ os.system('mkdir -p ../data/features/')
 
 WAV_PATH = extractFeatures_config.WAV_PATH
 DATA_PATH = extractFeatures_config.DATA_PATH
+OUTPUT_FEATURES_PATH = extractFeatures_config.OUTPUT_FEATURES_PATH
 
 FOLDS_PATH = extractFeatures_config.FOLDS_PATH
 
@@ -93,20 +94,9 @@ def getFilesFromPortion(portion):
 	return [x[:x.find('.')] for x in t1]
 
 foldFileList  = []
-foldFileList1 = []
 
 for portion in glob.glob(FOLDS_PATH):
 	foldFileList.append([WAV_PATH+x+'.wav' for x in getFilesFromPortion(portion)])
-
-for portion in glob.glob(FOLDS_PATH1):
-	foldFileList1.append([WAV1_PATH+x[:4]+'/'+x+'.wav' for x in getFilesFromPortion(portion)])
-
-
-# wavs  = glob.glob(WAV_PATH)
-# wavs1 = glob.glob(WAV1_PATH)
-
-#Energy block
-
 
 def getTotalAudio(folder_to_wavs):
         total = np.asarray([])
@@ -179,66 +169,23 @@ def getRootName(wavFile):
 	
 
 
-'''
-from sklearn.ensemble import RandomForestClassifier
-clf = RandomForestClassifier(n_estimators=1,n_jobs=-2)
-
-g = yieldEnergyFeats(foldFileList)
-t1 = g.next()
-X_train = t1[0][0]
-y_train = t1[0][1]
-
-t2 = ['../data/VanDam1/BS80/BS80_030213.wav']
-h = getTotalEnergyVector(t2)
-#t3 = h.next()
-X_test = h[0]
-y_test = h[1]
-
-clf.fit(X_train,y_train)
-clf.score(X_test,y_test)
-'''
 if __name__ == "__main__":
-	os.system('mkdir -p ../data/features/energy/VanDam')
-	os.system('mkdir -p ../data/features/energy/VanDam1')
-	print foldFileList1
-	for i in xrange(len(foldFileList1)):
-		print i
-		print "IIIIIIIII"
-		os.system('mkdir -p ../data/features/st/VanDam1/'+str(i))
-		for wavFile in foldFileList1[i]:
-			print wavFile
-			# X = getRawStVectorPerWav(wavFile,stWin,stStep)
-			# y_sil_near = getLabelPerWav(getStmForWav(wavFile),stStep,silMapFn,daylongNearSpeechDict)
-			# y_sil_all = getLabelPerWav(getStmForWav(wavFile),stStep,silMapFn,daylongAllSpeechDict)
-			# y_class = getLabelPerWav(getStmForWav(wavFile),stStep,classMapFn,daylongNearSpeechDict)
-			y_class2 = getLabelPerWav(getStmForWav(wavFile),stStep,classMapBinaryFn,daylongNearSpeechDict)
-			y_class3 = getLabelPerWav(getStmForWav(wavFile),stStep,classMapTernaryFn,daylongNearSpeechDict)
-			# pickle.dump(X,open('../data/features/st/VanDam1/'+str(i)+'/'+getRootName(wavFile)+'_X','w'))
-			# pickle.dump(y_sil_near,open('../data/features/st/VanDam1/'+str(i)+'/'+getRootName(wavFile)+'_ysil_near','w'))
-			# pickle.dump(y_sil_all,open('../data/features/st/VanDam1/'+str(i)+'/'+getRootName(wavFile)+'_ysil_all','w'))
-			# pickle.dump(y_class,open('../data/features/st/VanDam1/'+str(i)+'/'+getRootName(wavFile)+'_yclass','w'))
-			pickle.dump(y_class2,open('../data/features/st/VanDam1/'+str(i)+'/'+getRootName(wavFile)+'_yclass2','w'))
-			pickle.dump(y_class3,open('../data/features/st/VanDam1/'+str(i)+'/'+getRootName(wavFile)+'_yclass3','w'))
-
-
-
 	print foldFileList
 	for i in xrange(len(foldFileList)):
-		print i
-		print "normal"
-		os.system('mkdir -p ../data/features/st/VanDam/'+str(i))
+		print "Extracting for fold " + str(i)
+		os.system('mkdir -p '+OUTPUT_FEATURES_PATH+str(i))
 		for wavFile in foldFileList[i]:
 			print wavFile
-			# X = getRawStVectorPerWav(wavFile,stWin,stStep)
-			# y_sil = getLabelPerWav(getStmForWav(wavFile),stStep,silMapFn,shortSpeechDict)
-			# y_class = getLabelPerWav(getStmForWav(wavFile),stStep,classMapFn,shortSpeechDict)
+			X =        getRawStVectorPerWav(wavFile,stWin,stStep)
+			y_sil =    getLabelPerWav(getStmForWav(wavFile),stStep,silMapFn,shortSpeechDict)
+			y_class =  getLabelPerWav(getStmForWav(wavFile),stStep,classMapFn,shortSpeechDict)
 			y_class2 = getLabelPerWav(getStmForWav(wavFile),stStep,classMapBinaryFn,shortSpeechDict)
 			y_class3 = getLabelPerWav(getStmForWav(wavFile),stStep,classMapTernaryFn,shortSpeechDict)
-			# pickle.dump(X,open('../data/features/st/VanDam/'+str(i)+'/'+getRootName(wavFile)+'_X','w'))
-			# pickle.dump(y_sil,open('../data/features/st/VanDam/'+str(i)+'/'+getRootName(wavFile)+'_ysil','w'))
-			# pickle.dump(y_class,open('../data/features/st/VanDam/'+str(i)+'/'+getRootName(wavFile)+'_yclass','w'))
-			pickle.dump(y_class2,open('../data/features/st/VanDam/'+str(i)+'/'+getRootName(wavFile)+'_yclass2','w'))
-			pickle.dump(y_class3,open('../data/features/st/VanDam/'+str(i)+'/'+getRootName(wavFile)+'_yclass3','w'))
+			pickle.dump(X,       open(OUTPUT_FEATURES_PATH+str(i)+'/'+getRootName(wavFile)+'_X','w'))
+			pickle.dump(y_sil,   open(OUTPUT_FEATURES_PATH+str(i)+'/'+getRootName(wavFile)+'_ysil','w'))
+			pickle.dump(y_class, open(OUTPUT_FEATURES_PATH+str(i)+'/'+getRootName(wavFile)+'_yclass','w'))
+			pickle.dump(y_class2,open(OUTPUT_FEATURES_PATH+str(i)+'/'+getRootName(wavFile)+'_yclass2','w'))
+			pickle.dump(y_class3,open(OUTPUT_FEATURES_PATH+str(i)+'/'+getRootName(wavFile)+'_yclass3','w'))
 
 
 

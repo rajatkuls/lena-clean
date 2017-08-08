@@ -2,6 +2,7 @@
 
 WAV_PATH = '../data/VanDam/'
 DATA_PATH = '../data/'
+OUTPUT_FEATURES_PATH = '../data/features/st/VanDam/'
 os.system('mkdir -p '+DATA_PATH+'features/')
 
 FOLDS_PATH = '../data/folds/VanDam/portion*'
