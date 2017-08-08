@@ -3,13 +3,16 @@
 import glob
 import os
 from decimal import Decimal, getcontext
-import extractFeatures
+import extractFeatures_config
 
 
 WAV_PATH = extractFeatures_config.WAV_PATH
 DATA_PATH = extractFeatures_config.DATA_PATH
 OUTPUT_FEATURES_PATH = extractFeatures_config.OUTPUT_FEATURES_PATH
 
+FRAME_WIDTH = extractFeatures_config.FRAME_WIDTH
+INV_FRAME_WIDTH = extractFeatures_config.INV_FRAME_WIDTH
+MIN_DUR = extractFeatures_config.MIN_DUR
 
 label_map = {
     "ADU": "OAD", # adult

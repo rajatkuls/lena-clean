@@ -1,4 +1,5 @@
 # Put down all the paths here
+import os
 
 WAV_PATH = '../data/VanDam/'
 DATA_PATH = '../data/'

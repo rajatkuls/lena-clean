@@ -170,7 +170,6 @@ def getRootName(wavFile):
 
 
 if __name__ == "__main__":
-	print foldFileList
 	for i in xrange(len(foldFileList)):
 		print "Extracting for fold " + str(i)
 		os.system('mkdir -p '+OUTPUT_FEATURES_PATH+str(i))
@@ -186,7 +185,4 @@ if __name__ == "__main__":
 			pickle.dump(y_class, open(OUTPUT_FEATURES_PATH+str(i)+'/'+getRootName(wavFile)+'_yclass','w'))
 			pickle.dump(y_class2,open(OUTPUT_FEATURES_PATH+str(i)+'/'+getRootName(wavFile)+'_yclass2','w'))
 			pickle.dump(y_class3,open(OUTPUT_FEATURES_PATH+str(i)+'/'+getRootName(wavFile)+'_yclass3','w'))
-
-
-
 
