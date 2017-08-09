@@ -35,8 +35,7 @@ try:
 	outfileFolder = sys.argv[3]
 	speechModel = sys.argv[4]
 except:
-	print "Unexpected error:", sys.exc_info()[0]
-	classModel = 'models/class_short_long.p'
+	classModel = 'models/class_short_short_class2.p'
 	outfileFolder = 'models'
 	speechModel = 'models/a_classifier_all.p'
 
@@ -68,8 +67,8 @@ for i in xrange(y_out.shape[0]):
 
 
 medianame = extractFeatures.basename(inputWav)
-labelTools.writeToStm(y_out,classDictTernary,medianame,outfileFolder+'/'+medianame+'.stm')
-labelTools.writeToAudacity(y_out,classDictTernary,outfileFolder+'/'+medianame+'.txt')
+labelTools.writeToStm(y_out,classDictBinary,medianame,outfileFolder+'/'+medianame+'.stm')
+labelTools.writeToAudacity(y_out,classDictBinary,outfileFolder+'/'+medianame+'.txt')
 pickle.dump(y_out,open(outfileFolder+'/'+medianame+'_y_out.p','w'))
 
 os.system('cp '+inputWav+' '+outfileFolder+'/'+medianame+'.wav')

@@ -94,6 +94,10 @@ classDict        = {'CHI':1,'MOT':2,'FAT':3,'OCH':4,'OAD':5,'OTH':6} # child mot
 classDictBinary  = {'CHI':1,'MOT':2,'FAT':2,'OCH':1,'OAD':2,'OTH':3} # child adult
 classDictTernary = {'CHI':1,'MOT':2,'FAT':3,'OCH':1,'OAD':4,'OTH':4} # child male female
 
+revDict		 = {1:'CHI',2:'MOT',3:'FAT',4:'OCH',5:'OAD',6:'OTH'}
+revDictBinary	 = {1:'CHI',2:'ADU',3:'OTH'}
+revDictTernary	 = {1:'CHI',2:'WOM',3:'MAN',4:'OTH'}
+
 
 
 
