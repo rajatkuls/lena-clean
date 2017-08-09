@@ -4,6 +4,7 @@ import glob
 import os
 from decimal import Decimal, getcontext
 import extractFeatures_config
+import numpy as np
 
 
 WAV_PATH = extractFeatures_config.WAV_PATH
@@ -89,9 +90,9 @@ label_map1_far = {
 }
 
 silDict		 = {'SIL':0,'SPE':1}
-classDict        = {'CHI':1,'MOT':2,'FAT':3,'OCH':4,'OAD':5,'OTH':0}
-classDictBinary  = {'CHI':1,'MOT':2,'FAT':2,'OCH':1,'OAD':2,'OTH':0} # child adult
-classDictTernary = {'CHI':1,'MOT':2,'FAT':3,'OCH':1,'OAD':0,'OTH':0} # child male female
+classDict        = {'CHI':1,'MOT':2,'FAT':3,'OCH':4,'OAD':5,'OTH':6} # child mother father otherchild otheradult
+classDictBinary  = {'CHI':1,'MOT':2,'FAT':2,'OCH':1,'OAD':2,'OTH':3} # child adult
+classDictTernary = {'CHI':1,'MOT':2,'FAT':3,'OCH':1,'OAD':4,'OTH':4} # child male female
 
 
 
@@ -118,6 +119,7 @@ def stmNewLine(medianame,label,start,end):
 
 def writeToStm(y,labelsDict,medianame,outfilename):
         revDict = {v:k for k,v in labelsDict.items()}
+	revDict[silDict['SIL']] = 'SIL'
         y = np.asarray(y)
         boundaries = list((y[:-1] != y[1:]).nonzero()[0] + 1) + [y.shape[0]-1]
         labels = [revDict[y[x-1]] for x in boundaries]
@@ -137,6 +139,7 @@ def audacityNewLine(start,end,label):
 
 def writeToAudacity(y,labelsDict,outfilename):
         revDict = {v:k for k,v in labelsDict.items()}
+	revDict[silDict['SIL']] = 'SIL'
         y = np.asarray(y)
         boundaries = list((y[:-1] != y[1:]).nonzero()[0] + 1) + [y.shape[0]-1]
         labels = [revDict[y[x-1]] for x in boundaries]

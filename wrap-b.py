@@ -26,8 +26,8 @@ try:
 	model = sys.argv[2] # model saved by wrap-a 
 	outfileFolder = sys.argv[3]
 except:
-	model = 'models/a_classifier_template.p'
-	outfileFoler = 'models'
+	model = 'models/a_classifier_all.p'
+	outfileFolder = 'models'
 
 clf = pickle.load(open(model,'r'))
 

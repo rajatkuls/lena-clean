@@ -1,4 +1,4 @@
-# given a silence classifier, use it to generate audacity files and evaluate performance.
+# given a silence classifier, use it to generate audacity files.
 # user can adjust classifier as they want
 # system input - wavFile long/short outfileFolder
 
@@ -30,15 +30,17 @@ stWin = extractFeatures.stWin
 stStep = extractFeatures.stStep
 
 inputWav = sys.argv[1]
-
-classModel = sys.argv[2]
-
-outfileFolder = sys.argv[3]
-
-speechModel = sys.argv[4]
+try:
+	classModel = sys.argv[2]
+	outfileFolder = sys.argv[3]
+	speechModel = sys.argv[4]
+except:
+	print "Unexpected error:", sys.exc_info()[0]
+	classModel = 'models/class_short_long.p'
+	outfileFolder = 'models'
+	speechModel = 'models/a_classifier_all.p'
 
 clf = pickle.load(open(classModel,'r'))
-
 clfSpeech = pickle.load(open(speechModel,'r'))
 
 classDict        = labelTools.classDict
