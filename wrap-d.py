@@ -35,6 +35,7 @@ try:
 	outfileFolder = sys.argv[3]
 	speechModel = sys.argv[4]
 except:
+        print 'System inputs not detected, using defaults'
 	classModel = 'models/class_short_short_class2.p'
 	outfileFolder = 'models'
 	speechModel = 'models/a_classifier_all.p'
@@ -45,6 +46,8 @@ clfSpeech = pickle.load(open(speechModel,'r'))
 classDict        = labelTools.classDict
 classDictBinary  = labelTools.classDictBinary
 classDictTernary = labelTools.classDictTernary
+
+thisClassDict = classDictTernary
 
 X_test = extractFeatures.getRawStVectorPerWav(inputWav,stWin,stStep)
 X_test = X_test.T
@@ -67,8 +70,8 @@ for i in xrange(y_out.shape[0]):
 
 
 medianame = extractFeatures.basename(inputWav)
-labelTools.writeToStm(y_out,classDictBinary,medianame,outfileFolder+'/'+medianame+'.stm')
-labelTools.writeToAudacity(y_out,classDictBinary,outfileFolder+'/'+medianame+'.txt')
+labelTools.writeToStm(y_out,thisClassDict,medianame,outfileFolder+'/'+medianame+'.stm')
+labelTools.writeToAudacity(y_out,thisClassDict,outfileFolder+'/'+medianame+'.txt')
 pickle.dump(y_out,open(outfileFolder+'/'+medianame+'_y_out.p','w'))
 
 os.system('cp '+inputWav+' '+outfileFolder+'/'+medianame+'.wav')

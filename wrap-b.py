@@ -26,6 +26,7 @@ try:
 	model = sys.argv[2] # model saved by wrap-a 
 	outfileFolder = sys.argv[3]
 except:
+	print 'System inputs not detected, using defaults'
 	model = 'models/a_classifier_all.p'
 	outfileFolder = 'models'
 

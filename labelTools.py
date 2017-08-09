@@ -89,14 +89,16 @@ label_map1_far = {
 	"CXF": "OCH", # other child far
 }
 
-silDict		 = {'SIL':0,'SPE':1}
-classDict        = {'CHI':1,'MOT':2,'FAT':3,'OCH':4,'OAD':5,'OTH':6} # child mother father otherchild otheradult
-classDictBinary  = {'CHI':1,'MOT':2,'FAT':2,'OCH':1,'OAD':2,'OTH':3} # child adult
-classDictTernary = {'CHI':1,'MOT':2,'FAT':3,'OCH':1,'OAD':4,'OTH':4} # child male female
+revDictSil       = {0:'SIL',1:'SPE'}
+revDict          = {1:'CHI',2:'MOT',3:'FAT',4:'OCH',5:'OAD',6:'OTH'}
+revDictBinary    = {1:'CHI',2:'ADU',3:'OTH'}
+revDictTernary   = {1:'CHI',2:'WOM',3:'MAN',4:'OTH'}
 
-revDict		 = {1:'CHI',2:'MOT',3:'FAT',4:'OCH',5:'OAD',6:'OTH'}
-revDictBinary	 = {1:'CHI',2:'ADU',3:'OTH'}
-revDictTernary	 = {1:'CHI',2:'WOM',3:'MAN',4:'OTH'}
+silDict		 = {'SIL':0,'SPE':1,'rev':revDictSil}
+classDict        = {'CHI':1,'MOT':2,'FAT':3,'OCH':4,'OAD':5,'OTH':6,'rev':revDict} # child mother father otherchild otheradult
+classDictBinary  = {'CHI':1,'MOT':2,'FAT':2,'OCH':1,'OAD':2,'OTH':3,'rev':revDictBinary} # child adult
+classDictTernary = {'CHI':1,'MOT':2,'FAT':3,'OCH':1,'OAD':4,'OTH':4,'rev':revDictTernary} # child male female
+
 
 
 
@@ -122,7 +124,8 @@ def stmNewLine(medianame,label,start,end):
         return '\t'.join([medianame,label,medianame+'_'+label,str(start),str(end)]) + '\n'
 
 def writeToStm(y,labelsDict,medianame,outfilename):
-        revDict = {v:k for k,v in labelsDict.items()}
+        # revDict = {v:k for k,v in labelsDict.items()}
+	revDict = labelsDict['rev']
 	revDict[silDict['SIL']] = 'SIL'
         y = np.asarray(y)
         boundaries = list((y[:-1] != y[1:]).nonzero()[0] + 1) + [y.shape[0]-1]
@@ -142,7 +145,8 @@ def audacityNewLine(start,end,label):
 
 
 def writeToAudacity(y,labelsDict,outfilename):
-        revDict = {v:k for k,v in labelsDict.items()}
+        # revDict = {v:k for k,v in labelsDict.items()}
+	revDict = labelsDict['rev']
 	revDict[silDict['SIL']] = 'SIL'
         y = np.asarray(y)
         boundaries = list((y[:-1] != y[1:]).nonzero()[0] + 1) + [y.shape[0]-1]
